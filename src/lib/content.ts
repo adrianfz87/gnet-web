@@ -109,6 +109,14 @@ export const getSiteContent = async (): Promise<SiteContent> => {
       }
   }
 
+  // Solapa "Empresas" (servicios integrales para empresas), antes de ISP.
+  if (!navigation.some((link) => link.href === "/empresas")) {
+    const ispIndex = navigation.findIndex((link) => link.href === "/isp");
+    const empresasLink = { label: "Empresas", href: "/empresas" };
+    if (ispIndex >= 0) navigation.splice(ispIndex, 0, empresasLink);
+    else navigation.splice(Math.max(navigation.length - 1, 0), 0, empresasLink);
+  }
+
   const rawFooter = settings?.footer || defaults.footer;
   const sanityHomeOffice = settings?.header?.homeOfficeLink;
   const homeOfficeLink: NavLink | undefined =
