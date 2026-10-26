@@ -89,7 +89,7 @@ const steps = [
   { n: "4", title: "Mantenimiento", text: "Abono mensual: monitoreo, soporte y visitas cuando hacen falta." },
 ];
 
-// Dibujo propio: varios sitios (minera, comercio, oficina) unidos a Gnet.
+// Dibujo propio: varios sitios (minera, comercio, oficina) unidos a un servidor de Gnet.
 function NetworkArt() {
   const sites = [
     { x: 70, y: 70, label: "Minera" },
@@ -127,10 +127,35 @@ function NetworkArt() {
       <path d="M56 196 h28 v14 h-28 z M54 196 l4 -8 h24 l4 8" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinejoin="round" />
       <path d="M358 56 h24 v28 h-24 z M364 63 h4 M372 63 h4 M364 71 h4 M372 71 h4" fill="none" stroke="#fff" strokeWidth="1.6" />
       <path d="M356 210 h28 M358 210 v-14 h24 v14 M362 196 v-6 h16 v6" fill="none" stroke="#fff" strokeWidth="1.6" strokeLinejoin="round" />
-      {/* Gnet al centro */}
+      {/* Servidor al centro */}
       <circle cx="220" cy="135" r="44" fill="rgba(21,101,192,0.35)" />
-      <circle cx="220" cy="135" r="32" fill="#1565c0" />
-      <text x="220" y="141" textAnchor="middle" fontSize="17" fontWeight="800" fill="#fff">Gnet</text>
+      <circle cx="220" cy="135" r="34" fill="#1565c0" />
+      <g>
+        <rect x="201" y="116" width="38" height="11" rx="2.5" fill="#0b1f3a" stroke="#93c5fd" strokeWidth="1.2" />
+        <path d="M206 121.5 h12" stroke="#93c5fd" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+        <circle cx="229" cy="121.5" r="1.6" fill="#22c55e">
+          <animate attributeName="opacity" values="1;0.25;1" dur="1.2s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="234" cy="121.5" r="1.6" fill="#5eead4">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="0.9s" repeatCount="indefinite" />
+        </circle>
+        <rect x="201" y="130" width="38" height="11" rx="2.5" fill="#0b1f3a" stroke="#93c5fd" strokeWidth="1.2" />
+        <path d="M206 135.5 h12" stroke="#93c5fd" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+        <circle cx="229" cy="135.5" r="1.6" fill="#22c55e">
+          <animate attributeName="opacity" values="1;0.25;1" dur="1.7s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="234" cy="135.5" r="1.6" fill="#5eead4">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.3s" repeatCount="indefinite" />
+        </circle>
+        <rect x="201" y="144" width="38" height="11" rx="2.5" fill="#0b1f3a" stroke="#93c5fd" strokeWidth="1.2" />
+        <path d="M206 149.5 h12" stroke="#93c5fd" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
+        <circle cx="229" cy="149.5" r="1.6" fill="#22c55e">
+          <animate attributeName="opacity" values="1;0.25;1" dur="2.2s" repeatCount="indefinite" />
+        </circle>
+        <circle cx="234" cy="149.5" r="1.6" fill="#5eead4">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="1.7000000000000002s" repeatCount="indefinite" />
+        </circle>
+      </g>
       <circle cx="220" cy="135" r="44" fill="none" stroke="#5eead4" strokeWidth="1.2" opacity="0.6">
         <animate attributeName="r" values="44;58;44" dur="3s" repeatCount="indefinite" />
         <animate attributeName="opacity" values="0.6;0;0.6" dur="3s" repeatCount="indefinite" />

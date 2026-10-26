@@ -169,19 +169,19 @@ export function WirelessCamerasSecurity() {
               cables, y funcionan con el WiFi de tu casa. Mirás todo en vivo
               desde el celular, estés donde estés.
             </p>
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="grid gap-3 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={openWhatsapp}
-                className="flex h-12 items-center justify-center rounded-lg bg-[var(--color-primary)] px-6 text-white text-base font-bold shadow-lg hover:bg-blue-600 transition-colors cursor-pointer"
+                className="flex h-12 w-full items-center justify-center rounded-lg bg-[var(--color-primary)] px-4 text-white text-base font-bold shadow-lg hover:bg-blue-600 transition-colors cursor-pointer whitespace-nowrap"
               >
                 Quiero mis cámaras
               </button>
               <Link
                 href="/cotizar"
-                className="flex h-12 items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-6 text-slate-900 dark:text-white text-base font-bold hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+                className="flex h-12 w-full items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-4 text-slate-900 dark:text-white text-base font-bold whitespace-nowrap hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
               >
-                Cotizá online en 2 minutos
+                Cotizá en 2 minutos
               </Link>
             </div>
           </motion.div>
