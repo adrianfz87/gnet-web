@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   BatteryFull,
@@ -176,9 +177,12 @@ export function WirelessCamerasSecurity() {
               >
                 Quiero mis cámaras
               </button>
-              <span className="text-sm text-slate-500 dark:text-slate-400">
-                Te asesoramos y te las dejamos andando.
-              </span>
+              <Link
+                href="/cotizar"
+                className="flex h-12 items-center justify-center rounded-lg border border-slate-300 dark:border-slate-700 px-6 text-slate-900 dark:text-white text-base font-bold hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+              >
+                Cotizá online en 2 minutos
+              </Link>
             </div>
           </motion.div>
 
