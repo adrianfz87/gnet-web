@@ -15,10 +15,11 @@
 // - Cable UTP exterior 100% cobre: $1.133 el metro (argseguridad.com).
 // - Fichas, balun y fuente por cámara: estimado.
 // - Instalación por cámara: $85.500 en superficie (Electro Instalador, mayo-junio 2026).
-// - Configuración del grabador y la app: $52.000 a $155.000 (todoresuelto.com).
+// - Configuración de equipos, app y cuenta: 70% de la instalación (se muestra bonificada).
 
 export const MARGEN = 1.2; // +20% sobre el precio de mercado
 export const RANGO = 1.15; // el "hasta" del presupuesto: +15% para imprevistos
+export const CONFIGURACION = 0.7; // la configuración (bonificada) vale el 70% de la instalación
 
 const mercado = {
   camaraBateria: 175000,
@@ -32,8 +33,6 @@ const mercado = {
   materialesPorCamara: 12000,
   instalacionCableada: 85500,
   instalacionInalambrica: 42000,
-  configuracionGrabador: 90000,
-  configuracionApp: 40000,
 };
 
 type Precios = typeof mercado;

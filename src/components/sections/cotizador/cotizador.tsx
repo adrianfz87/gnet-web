@@ -17,7 +17,7 @@ import {
   Sofa,
   Layers,
 } from "lucide-react";
-import { PRECIOS, RANGO } from "@/data/cotizador-precios";
+import { CONFIGURACION, PRECIOS, RANGO } from "@/data/cotizador-precios";
 import { cn } from "@/lib/utils";
 
 const WHATSAPP_PHONE = "5492944824423";
@@ -81,14 +81,14 @@ function calcular(tipo: Tipo, cantidad: number, metros: number): Linea[] {
     return [
       { concepto: `${cantidad} cámara${cantidad > 1 ? "s" : ""} inalámbrica${cantidad > 1 ? "s" : ""} a pilas`, monto: cantidad * p.camaraBateria },
       { concepto: "Instalación", monto: cantidad * p.instalacionInalambrica },
-      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: p.configuracionApp, bonificado: true },
+      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: cantidad * p.instalacionInalambrica * CONFIGURACION, bonificado: true },
     ];
   }
   if (tipo === "wifi") {
     return [
       { concepto: `${cantidad} cámara${cantidad > 1 ? "s" : ""} WiFi`, monto: cantidad * p.camaraWifi },
       { concepto: "Instalación", monto: cantidad * p.instalacionInalambrica },
-      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: p.configuracionApp, bonificado: true },
+      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: cantidad * p.instalacionInalambrica * CONFIGURACION, bonificado: true },
     ];
   }
   const grabador = cantidad <= 4 ? p.dvr4 : p.dvr8;
@@ -98,7 +98,7 @@ function calcular(tipo: Tipo, cantidad: number, metros: number): Linea[] {
     { concepto: `Grabador de ${cantidad <= 4 ? 4 : 8} canales con disco de ${cantidad <= 4 ? "1" : "2"} TB`, monto: grabador + disco },
     { concepto: `Cable y materiales (~${metros} m por cámara)`, monto: cantidad * (metros * p.cableMetro + p.materialesPorCamara) },
     { concepto: "Instalación", monto: cantidad * p.instalacionCableada },
-    { concepto: "Configuración del grabador, la app y tu cuenta", monto: p.configuracionGrabador, bonificado: true },
+    { concepto: "Configuración del grabador, la app y tu cuenta", monto: cantidad * p.instalacionCableada * CONFIGURACION, bonificado: true },
   ];
 }
 
