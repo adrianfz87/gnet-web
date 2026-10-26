@@ -1,6 +1,6 @@
 import { Footer } from "@/components/layout/footer";
 import { HeroSecurity } from "@/components/sections/security/hero-security";
-import { BlinkSecurity } from "@/components/sections/security/blink-security";
+import { WirelessCamerasSecurity } from "@/components/sections/security/wireless-cameras-security";
 import { SolutionsTabs } from "@/components/sections/security/solutions-tabs";
 import { ServicesGridSecurity } from "@/components/sections/security/services-grid-security";
 import { GallerySecurity } from "@/components/sections/security/gallery-security";
@@ -20,7 +20,7 @@ export default async function SecurityPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-slate-950 flex flex-col font-display transition-colors duration-300">
       <HeroSecurity content={content.security.hero} />
-      <BlinkSecurity />
+      <WirelessCamerasSecurity />
       <SolutionsTabs content={content.security.solutions} />
       <ServicesGridSecurity content={content.security.services} />
       {/* <GallerySecurity content={content.security.gallery} /> */}

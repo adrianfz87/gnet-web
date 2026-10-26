@@ -47,7 +47,7 @@ const features = [
 
 function openWhatsapp() {
   const message =
-    "Hola, quiero consultar por las cámaras Blink inalámbricas.";
+    "Hola, quiero consultar por las cámaras inalámbricas.";
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const baseUrl = isMobile
     ? "https://api.whatsapp.com/send"
@@ -60,7 +60,7 @@ function openWhatsapp() {
 
 // Dibujo propio: una cámara compacta en la pared de una casa, sin cables,
 // avisando al celular por WiFi.
-function BlinkScene() {
+function WirelessScene() {
   return (
     <svg
       viewBox="0 0 420 320"
@@ -69,16 +69,16 @@ function BlinkScene() {
       aria-label="Cámara inalámbrica en la pared de una casa avisando al celular"
     >
       <defs>
-        <linearGradient id="blinkSky" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="wcSky" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#e8f1fb" />
           <stop offset="1" stopColor="#f8fafc" />
         </linearGradient>
-        <linearGradient id="blinkCam" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id="wcCam" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#2b3442" />
           <stop offset="1" stopColor="#11161d" />
         </linearGradient>
       </defs>
-      <rect x="0" y="0" width="420" height="320" rx="24" fill="url(#blinkSky)" />
+      <rect x="0" y="0" width="420" height="320" rx="24" fill="url(#wcSky)" />
       {/* cordillera */}
       <path
         d="M0 210 L70 150 L110 180 L170 120 L230 185 L280 150 L340 195 L420 160 L420 320 L0 320 Z"
@@ -93,7 +93,7 @@ function BlinkScene() {
       <rect x="82" y="214" width="30" height="30" rx="3" fill="#e8eef5" stroke="#c9d6e3" strokeWidth="2" />
       {/* cámara en la pared */}
       <g transform="translate(198 200)">
-        <rect x="0" y="0" width="34" height="32" rx="8" fill="url(#blinkCam)" />
+        <rect x="0" y="0" width="34" height="32" rx="8" fill="url(#wcCam)" />
         <circle cx="17" cy="15" r="7.5" fill="#0b0f14" stroke="#3b4656" strokeWidth="1.5" />
         <circle cx="15" cy="13" r="2.2" fill="#5a8fd6" />
         <circle cx="27" cy="6" r="1.6" fill="#22c55e">
@@ -139,10 +139,10 @@ function BlinkScene() {
   );
 }
 
-export function BlinkSecurity() {
+export function WirelessCamerasSecurity() {
   return (
     <section
-      id="blink"
+      id="camaras-inalambricas"
       className="w-full max-w-[960px] mx-auto px-4 py-14 md:px-10"
     >
       <div className="relative overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
@@ -155,7 +155,7 @@ export function BlinkSecurity() {
             className="flex flex-col gap-5"
           >
             <span className="inline-flex w-fit items-center gap-2 rounded-full bg-blue-50 dark:bg-slate-800 px-3 py-1 text-xs font-bold uppercase tracking-wide text-[var(--color-primary)]">
-              Nuevo · Cámaras Blink
+              Nuevo · Cámaras inalámbricas
             </span>
             <h2 className="text-3xl md:text-4xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">
               Cámaras 100% inalámbricas.{" "}
@@ -164,7 +164,7 @@ export function BlinkSecurity() {
               </span>
             </h2>
             <p className="text-slate-600 dark:text-slate-300 text-base leading-relaxed">
-              Las cámaras Blink de Amazon se ponen en minutos, sin obra ni
+              Estas cámaras se ponen en minutos, sin obra ni
               cables, y funcionan con el WiFi de tu casa. Mirás todo en vivo
               desde el celular, estés donde estés.
             </p>
@@ -174,7 +174,7 @@ export function BlinkSecurity() {
                 onClick={openWhatsapp}
                 className="flex h-12 items-center justify-center rounded-lg bg-[var(--color-primary)] px-6 text-white text-base font-bold shadow-lg hover:bg-blue-600 transition-colors cursor-pointer"
               >
-                Quiero mis cámaras Blink
+                Quiero mis cámaras
               </button>
               <span className="text-sm text-slate-500 dark:text-slate-400">
                 Te asesoramos y te las dejamos andando.
@@ -188,7 +188,7 @@ export function BlinkSecurity() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
-            <BlinkScene />
+            <WirelessScene />
           </motion.div>
         </div>
 
@@ -214,9 +214,8 @@ export function BlinkSecurity() {
         </div>
 
         <p className="px-6 md:px-10 py-4 text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200 dark:border-slate-800">
-          * Duración informada por el fabricante para el modelo Blink Outdoor 4
-          con uso típico. Varía según la cantidad de grabaciones, el frío y la
-          señal WiFi. Blink es una marca de Amazon.
+          * Duración informada por el fabricante con uso típico. Varía según la
+          cantidad de grabaciones, el frío y la señal WiFi.
         </p>
       </div>
     </section>
