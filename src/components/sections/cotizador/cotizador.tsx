@@ -70,7 +70,8 @@ const TIPO_TEXTO: Record<Tipo, string> = {
 // Redondeado a miles: "$ 1.234.000"
 const pesos = (n: number) => "$ " + (Math.round(n / 1000) * 1000).toLocaleString("es-AR");
 
-type Linea = { concepto: string; monto: number };
+// "bonificado": se muestra tachado y no suma al total (regalo de Gnet).
+type Linea = { concepto: string; monto: number; bonificado?: boolean };
 
 function calcular(tipo: Tipo, cantidad: number, metros: number): Linea[] {
   const p = PRECIOS;
@@ -78,14 +79,14 @@ function calcular(tipo: Tipo, cantidad: number, metros: number): Linea[] {
     return [
       { concepto: `${cantidad} cámara${cantidad > 1 ? "s" : ""} inalámbrica${cantidad > 1 ? "s" : ""} a pilas`, monto: cantidad * p.camaraBateria },
       { concepto: "Instalación", monto: cantidad * p.instalacionInalambrica },
-      { concepto: "Configuración de la app en tu celular", monto: p.configuracionApp },
+      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: p.configuracionApp, bonificado: true },
     ];
   }
   if (tipo === "wifi") {
     return [
       { concepto: `${cantidad} cámara${cantidad > 1 ? "s" : ""} WiFi`, monto: cantidad * p.camaraWifi },
       { concepto: "Instalación", monto: cantidad * p.instalacionInalambrica },
-      { concepto: "Configuración de la app en tu celular", monto: p.configuracionApp },
+      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: p.configuracionApp, bonificado: true },
     ];
   }
   const grabador = cantidad <= 4 ? p.dvr4 : p.dvr8;
@@ -95,7 +96,7 @@ function calcular(tipo: Tipo, cantidad: number, metros: number): Linea[] {
     { concepto: `Grabador de ${cantidad <= 4 ? 4 : 8} canales con disco de ${cantidad <= 4 ? "1" : "2"} TB`, monto: grabador + disco },
     { concepto: `Cable y materiales (~${metros} m por cámara)`, monto: cantidad * (metros * p.cableMetro + p.materialesPorCamara) },
     { concepto: "Instalación", monto: cantidad * p.instalacionCableada },
-    { concepto: "Configuración del grabador y la app", monto: p.configuracionGrabador },
+    { concepto: "Configuración del grabador, la app y tu cuenta", monto: p.configuracionGrabador, bonificado: true },
   ];
 }
 
@@ -162,7 +163,7 @@ export function Cotizador() {
     (actual === "datos" && nombre.trim().length > 1 && whatsapp.replace(/\D/g, "").length >= 8);
 
   const lineas = tipo && cantidad ? calcular(tipo, cantidad, metros || 20) : [];
-  const total = lineas.reduce((n, l) => n + l.monto, 0);
+  const total = lineas.reduce((n, l) => n + (l.bonificado ? 0 : l.monto), 0);
 
   function enviar() {
     const resumen = [
@@ -174,6 +175,7 @@ export function Cotizador() {
       `• Nombre: ${nombre.trim()}`,
       `• WhatsApp: ${whatsapp.trim()}`,
       barrio.trim() ? `• Barrio: ${barrio.trim()}` : null,
+      "• Configuración de equipos, app y cuenta: bonificada",
       "Quiero coordinar la visita para confirmar el precio.",
     ]
       .filter(Boolean)
@@ -331,7 +333,9 @@ export function Cotizador() {
                       {cantidad} cámara{cantidad > 1 ? "s" : ""} {TIPO_TEXTO[tipo]}, con instalación
                     </span>
                     <div className="mt-1 text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-                      {pesos(total)} <span className="text-slate-400 font-bold text-2xl">a</span> {pesos(total * RANGO)}
+                      <span className="whitespace-nowrap">{pesos(total)}</span>{" "}
+                      <span className="text-slate-400 font-bold text-2xl">a</span>{" "}
+                      <span className="whitespace-nowrap">{pesos(total * RANGO)}</span>
                     </div>
                   </div>
 
@@ -339,7 +343,14 @@ export function Cotizador() {
                     {lineas.map((linea) => (
                       <div key={linea.concepto} className="flex items-baseline justify-between gap-4 py-2.5 border-b border-slate-100 dark:border-slate-800 text-sm">
                         <span className="text-slate-600 dark:text-slate-300">{linea.concepto}</span>
-                        <span className="font-semibold text-slate-900 dark:text-white whitespace-nowrap">{pesos(linea.monto)}</span>
+                        {linea.bonificado ? (
+                          <span className="flex items-baseline gap-2 whitespace-nowrap">
+                            <span className="text-slate-400 line-through">{pesos(linea.monto)}</span>
+                            <span className="rounded-full bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:text-emerald-400">Bonificado</span>
+                          </span>
+                        ) : (
+                          <span className="font-semibold text-slate-900 dark:text-white whitespace-nowrap">{pesos(linea.monto)}</span>
+                        )}
                       </div>
                     ))}
                   </div>
