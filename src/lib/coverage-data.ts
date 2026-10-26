@@ -65,6 +65,27 @@ export const COVERAGE_GEOJSON: FeatureCollection<Polygon> = {
     //     ],
     //   },
     // },
+    // Zona: Aire (Omega, El Frutillar, Nahuel Hue y El Maitén)
+    {
+      type: "Feature",
+      properties: { name: "Cobertura Aire Omega", type: "aire", color: "#3b82f6" }, // Blue-500
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [-71.33945, -41.154891],
+            [-71.32271, -41.154891],
+            [-71.309834, -41.157996],
+            [-71.306615, -41.161877],
+            [-71.311121, -41.174977],
+            [-71.329149, -41.174977],
+            [-71.342025, -41.16964],
+            [-71.343313, -41.161877],
+            [-71.33945, -41.154891],
+          ],
+        ],
+      },
+    },
     // Zona 4: FIBRA OPTICA (La zona verde)
     {
       type: "Feature",
