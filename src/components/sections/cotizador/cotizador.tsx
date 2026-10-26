@@ -67,8 +67,10 @@ const TIPO_TEXTO: Record<Tipo, string> = {
   cableada: "cableadas con grabador",
 };
 
-// Redondeado a miles: "$ 1.234.000"
-const pesos = (n: number) => "$ " + (Math.round(n / 1000) * 1000).toLocaleString("es-AR");
+// Los montos se redondean siempre para arriba, a los $5.000: "$ 155.000".
+const REDONDEO = 5000;
+const arriba = (n: number) => Math.ceil(n / REDONDEO) * REDONDEO;
+const pesos = (n: number) => "$ " + arriba(n).toLocaleString("es-AR");
 
 // "bonificado": se muestra tachado y no suma al total (regalo de Gnet).
 type Linea = { concepto: string; monto: number; bonificado?: boolean };
@@ -163,7 +165,7 @@ export function Cotizador() {
     (actual === "datos" && nombre.trim().length > 1 && whatsapp.replace(/\D/g, "").length >= 8);
 
   const lineas = tipo && cantidad ? calcular(tipo, cantidad, metros || 20) : [];
-  const total = lineas.reduce((n, l) => n + (l.bonificado ? 0 : l.monto), 0);
+  const total = lineas.reduce((n, l) => n + (l.bonificado ? 0 : arriba(l.monto)), 0);
 
   function enviar() {
     const resumen = [
