@@ -17,7 +17,7 @@ import {
   Sofa,
   Layers,
 } from "lucide-react";
-import { CONFIGURACION, PRECIOS, RANGO } from "@/data/cotizador-precios";
+import { CONFIGURACION, PRECIOS, RANGO, RECARGO_NEGOCIO } from "@/data/cotizador-precios";
 import { cn } from "@/lib/utils";
 
 const WHATSAPP_PHONE = "5492944824423";
@@ -42,7 +42,7 @@ const TIPOS: { key: Tipo; icon: typeof Wifi; title: string; text: string }[] = [
     key: "wifi",
     icon: Wifi,
     title: "WiFi con enchufe",
-    text: "Solo necesitan un enchufe cerca. Se ven desde el celular.",
+    text: "Vienen con tarjeta SD de 64 GB para grabar. Les llevamos la energía y se ven desde el celular.",
   },
   {
     key: "cableada",
@@ -60,6 +60,7 @@ const UBICACIONES = [
 
 const CANTIDADES = [1, 2, 3, 4, 5, 6, 7, 8];
 const DISTANCIAS = [10, 20, 30, 50];
+const DISTANCIAS_WIFI = [5, 10, 20, 30];
 
 const TIPO_TEXTO: Record<Tipo, string> = {
   bateria: "inalámbricas a pilas",
@@ -75,27 +76,34 @@ const pesos = (n: number) => "$ " + arriba(n).toLocaleString("es-AR");
 // "bonificado": se muestra tachado y no suma al total (regalo de Gnet).
 type Linea = { concepto: string; monto: number; bonificado?: boolean };
 
-function calcular(tipo: Tipo, cantidad: number, metros: number): Linea[] {
+// Comercio u oficina: +21% sobre todo, repartido en cada línea.
+function calcular(tipo: Tipo, cantidad: number, metros: number, lugar: string | null): Linea[] {
+  const factor = lugar === "Comercio" || lugar === "Oficina" ? RECARGO_NEGOCIO : 1;
+  return calcularBase(tipo, cantidad, metros).map((linea) => ({ ...linea, monto: linea.monto * factor }));
+}
+
+function calcularBase(tipo: Tipo, cantidad: number, metros: number): Linea[] {
   const p = PRECIOS;
   if (tipo === "bateria") {
     return [
       { concepto: `${cantidad} cámara${cantidad > 1 ? "s" : ""} inalámbrica${cantidad > 1 ? "s" : ""} a pilas`, monto: cantidad * p.camaraBateria },
-      { concepto: "Instalación", monto: cantidad * p.instalacionInalambrica },
-      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: cantidad * p.instalacionInalambrica * CONFIGURACION, bonificado: true },
+      { concepto: "Instalación", monto: cantidad * p.instalacionBateria },
+      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: cantidad * p.instalacionBateria * CONFIGURACION, bonificado: true },
     ];
   }
   if (tipo === "wifi") {
     return [
-      { concepto: `${cantidad} cámara${cantidad > 1 ? "s" : ""} WiFi`, monto: cantidad * p.camaraWifi },
-      { concepto: "Instalación", monto: cantidad * p.instalacionInalambrica },
-      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: cantidad * p.instalacionInalambrica * CONFIGURACION, bonificado: true },
+      { concepto: `${cantidad} cámara${cantidad > 1 ? "s" : ""} WiFi con tarjeta SD de 64 GB`, monto: cantidad * p.camaraWifi },
+      { concepto: `Cable de energía (~${metros} m por cámara)`, monto: cantidad * metros * p.cableEnergiaMetro },
+      { concepto: "Instalación, llevando la energía a cada cámara", monto: cantidad * p.instalacionWifi },
+      { concepto: "Configuración de las cámaras, la app y tu cuenta", monto: cantidad * p.instalacionWifi * CONFIGURACION, bonificado: true },
     ];
   }
   const grabador = cantidad <= 4 ? p.dvr4 : p.dvr8;
-  const disco = cantidad <= 4 ? p.disco1tb : p.disco2tb;
+  const disco = cantidad <= 4 ? p.ssd512 : p.ssd1tb;
   return [
     { concepto: `${cantidad} cámara${cantidad > 1 ? "s" : ""} HD`, monto: cantidad * p.camaraCableada },
-    { concepto: `Grabador de ${cantidad <= 4 ? 4 : 8} canales con disco de ${cantidad <= 4 ? "1" : "2"} TB`, monto: grabador + disco },
+    { concepto: `Grabador de ${cantidad <= 4 ? 4 : 8} canales con disco SSD de ${cantidad <= 4 ? "512 GB" : "1 TB"}`, monto: grabador + disco },
     { concepto: `Cable y materiales (~${metros} m por cámara)`, monto: cantidad * (metros * p.cableMetro + p.materialesPorCamara) },
     { concepto: "Instalación", monto: cantidad * p.instalacionCableada },
     { concepto: "Configuración del grabador, la app y tu cuenta", monto: cantidad * p.instalacionCableada * CONFIGURACION, bonificado: true },
@@ -148,7 +156,7 @@ export function Cotizador() {
 
   const pasos = useMemo(() => {
     const lista = ["lugar", "tipo", "ubicacion", "cantidad"];
-    if (tipo === "cableada") lista.push("distancia");
+    if (tipo === "cableada" || tipo === "wifi") lista.push("distancia");
     lista.push("datos", "resultado");
     return lista;
   }, [tipo]);
@@ -164,7 +172,7 @@ export function Cotizador() {
     (actual === "distancia" && metros) ||
     (actual === "datos" && nombre.trim().length > 1 && whatsapp.replace(/\D/g, "").length >= 8);
 
-  const lineas = tipo && cantidad ? calcular(tipo, cantidad, metros || 20) : [];
+  const lineas = tipo && cantidad ? calcular(tipo, cantidad, metros || (tipo === "wifi" ? 10 : 20), lugar) : [];
   const total = lineas.reduce((n, l) => n + (l.bonificado ? 0 : arriba(l.monto)), 0);
 
   function enviar() {
@@ -173,6 +181,8 @@ export function Cotizador() {
       `• Lugar: ${lugar}`,
       `• Cámaras: ${cantidad} ${tipo ? TIPO_TEXTO[tipo] : ""} (${ubicacion?.toLowerCase()})`,
       tipo === "cableada" ? `• Cable: ~${metros} m por cámara` : null,
+      tipo === "wifi" ? `• Cable de energía: ~${metros} m por cámara` : null,
+      "• Incluye los arreglos eléctricos necesarios para que funcione todo",
       `• Presupuesto estimado: ${pesos(total)} a ${pesos(total * RANGO)}`,
       `• Nombre: ${nombre.trim()}`,
       `• WhatsApp: ${whatsapp.trim()}`,
@@ -192,7 +202,7 @@ export function Cotizador() {
     tipo: "¿Qué tipo de cámaras?",
     ubicacion: "¿Van adentro o afuera?",
     cantidad: "¿Cuántas cámaras?",
-    distancia: "¿Cuánto cable hay hasta cada cámara?",
+    distancia: tipo === "wifi" ? "¿Cuánto cable hay desde el enchufe hasta cada cámara?" : "¿Cuánto cable hay hasta cada cámara?",
     datos: "¿A quién le mandamos el presupuesto?",
     resultado: "Tu presupuesto estimado",
   };
@@ -252,7 +262,7 @@ export function Cotizador() {
               {actual === "tipo" && (
                 <div className="grid gap-3">
                   {TIPOS.map(({ key, icon: Icon, title, text }) => (
-                    <Opcion key={key} activo={tipo === key} onClick={() => setTipo(key)} className="items-start gap-4 pr-10">
+                    <Opcion key={key} activo={tipo === key} onClick={() => { setTipo(key); setMetros(null); }} className="items-start gap-4 pr-10">
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-50 dark:bg-slate-800 text-[var(--color-primary)]">
                         <Icon className="h-5 w-5" />
                       </span>
@@ -294,7 +304,7 @@ export function Cotizador() {
               {actual === "distancia" && (
                 <div className="flex flex-col gap-4">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                    {DISTANCIAS.map((m) => (
+                    {(tipo === "wifi" ? DISTANCIAS_WIFI : DISTANCIAS).map((m) => (
                       <Opcion key={m} activo={metros === m} onClick={() => setMetros(m)} className="flex-col items-center gap-1 py-5">
                         <span className="text-2xl font-black text-slate-900 dark:text-white">{m} m</span>
                         <span className="text-xs text-slate-500">por cámara</span>
@@ -302,7 +312,9 @@ export function Cotizador() {
                     ))}
                   </div>
                   <p className="text-sm text-slate-500 dark:text-slate-400">
-                    Es la distancia aproximada desde donde va el grabador (cerca del router) hasta cada cámara. Si no sabés, elegí 20 m.
+                    {tipo === "wifi"
+                      ? "Es la distancia aproximada desde el enchufe más cercano hasta cada cámara. Si no sabés, elegí 10 m."
+                      : "Es la distancia aproximada desde donde va el grabador (cerca del router) hasta cada cámara. Si no sabés, elegí 20 m."}
                   </p>
                 </div>
               )}
@@ -356,6 +368,11 @@ export function Cotizador() {
                       </div>
                     ))}
                   </div>
+
+                  <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Incluye los arreglos eléctricos necesarios para que todo funcione: armado de fichas, tomas y
+                    conexiones para las cámaras{tipo === "cableada" ? " y el grabador" : ""}.
+                  </p>
 
                   <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                     Es un precio estimado. El precio final se confirma en una visita sin cargo: si en el lugar hay algo
