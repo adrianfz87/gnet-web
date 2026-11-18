@@ -152,7 +152,15 @@ export function Footer({ content }: { content: FooterContent }) {
           </div>
         </div>
         <div className="container mx-auto px-4 md:px-10 border-t border-slate-800 pt-8 flex flex-col lg:flex-row justify-between items-center text-xs text-center lg:text-left">
-          <p>{content.copyright}</p>
+          <p>
+            {content.copyright}
+            <span className="block lg:inline lg:ml-4 mt-2 lg:mt-0">
+              Sitio hecho por{" "}
+              <a href="https://gdev.ar" target="_blank" rel="noopener" className="hover:text-white hover:underline">
+                GDev
+              </a>
+            </span>
+          </p>
           <div className="flex gap-4 mt-4 lg:mt-0">
             {content.legalLinks.map((link) => {
               const labelLower = link.label.toLowerCase();
